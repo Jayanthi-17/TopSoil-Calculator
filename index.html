@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topsoil Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background-color: #fff8f0;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background-color: #ffffff;
+      border-top: 5px solid #ad2a24;
+    }
+    h1 {
+      text-align: center;
+      color: #ad2a24;
+    }
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+    }
+    input, select, button {
+      padding: 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    input {
+      width: calc(100% - 1rem);
+      margin-bottom: 0.5rem;
+    }
+    select {
+      width: 100%;
+      margin-top: 0.25rem;
+    }
+    .input-with-unit {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .input-with-unit input {
+      flex: 2;
+      margin-bottom: 0;
+    }
+    .input-with-unit select {
+      flex: 1;
+      margin-top: 0;
+    }
+    .dimension-group {
+      margin-bottom: 1rem;
+    }
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    button {
+      width: 100%;
+      background-color: #ad2a24;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #92231f;
+    }
+    .output {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #fdf2ed;
+      border-left: 4px solid #ad2a24;
+    }
+    .error {
+      color: #ad2a24;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    .error.active {
+      display: block;
+    }
+    .input-error {
+      border-color: #ad2a24;
+    }
+    @media (max-width: 600px) {
+      .button-group {
+        flex-direction: column;
+      }
+      .input-with-unit {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.25rem;
+      }
+      .input-with-unit input,
+      .input-with-unit select {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Topsoil Calculator</h1>
+    <form id="topsoilForm">
+      <label>Choose Input Type:</label>
+      <select id="inputType">
+        <option value="area">Total Area</option>
+        <option value="dimensions">Dimensions</option>
+      </select>
+
+      <div id="areaInput">
+        <label>Total Area:</label>
+        <div class="input-with-unit">
+          <input type="number" id="totalArea" placeholder="Enter area">
+          <select id="areaUnit">
+            <option value="feet">Square Feet</option>
+            <option value="yards">Square Yards</option>
+            <option value="meters">Square Meters</option>
+          </select>
+        </div>
+        <span id="areaError" class="error">Please enter a valid area</span>
+      </div>
+
+      <div id="dimensionInput" style="display:none">
+        <div class="dimension-group">
+          <label>Length:</label>
+          <div class="input-with-unit">
+            <input type="number" id="length">
+            <select id="lengthUnit">
+              <option value="feet">Feet</option>
+              <option value="yards">Yards</option>
+              <option value="meters">Meters</option>
+            </select>
+          </div>
+          <span id="lengthError" class="error">Please enter a valid length</span>
+        </div>
+        
+        <div class="dimension-group">
+          <label>Width:</label>
+          <div class="input-with-unit">
+            <input type="number" id="width">
+            <select id="widthUnit">
+              <option value="feet">Feet</option>
+              <option value="yards">Yards</option>
+              <option value="meters">Meters</option>
+            </select>
+          </div>
+          <span id="widthError" class="error">Please enter a valid width</span>
+        </div>
+      </div>
+
+      <label>Depth (inches):</label>
+      <input type="number" id="depth" value="6" min="2" max="10">
+      <span id="depthError" class="error">Please enter depth between 2 and 10 inches</span>
+
+      <div class="button-group">
+        <button type="button" onclick="calculateTopsoil()">Calculate</button>
+        <button type="reset" onclick="clearOutput()">Reset</button>
+      </div>
+    </form>
+
+    <div class="output" id="output" style="display:none">
+      <h2>How much topsoil do I need?</h2>
+      <p id="result"></p>
+    </div>
+  </div>
+
+  <script>
+    const inputType = document.getElementById('inputType');
+    const areaInput = document.getElementById('areaInput');
+    const dimensionInput = document.getElementById('dimensionInput');
+
+    inputType.addEventListener('change', function() {
+      if (this.value === 'area') {
+        areaInput.style.display = 'block';
+        dimensionInput.style.display = 'none';
+      } else {
+        areaInput.style.display = 'none';
+        dimensionInput.style.display = 'block';
+      }
+    });
+
+    function convertToSquareFeet(value, unit) {
+      if (unit === 'yards') return value * 9;
+      if (unit === 'meters') return value * 10.7639;
+      return value;
+    }
+
+    function convertLengthToFeet(value, unit) {
+      if (unit === 'yards') return value * 3;
+      if (unit === 'meters') return value * 3.28084;
+      return value;
+    }
+
+    function clearErrors() {
+      document.querySelectorAll('.error').forEach(el => {
+        el.classList.remove('active');
+      });
+      document.querySelectorAll('input').forEach(el => {
+        el.classList.remove('input-error');
+      });
+    }
+
+    function showError(elementId, errorId) {
+      document.getElementById(elementId).classList.add('input-error');
+      document.getElementById(errorId).classList.add('active');
+    }
+
+    function calculateTopsoil() {
+      clearErrors();
+      let isValid = true;
+      let area = 0;
+
+      if (inputType.value === 'area') {
+        const totalArea = parseFloat(document.getElementById('totalArea').value);
+        const areaUnit = document.getElementById('areaUnit').value;
+        if (isNaN(totalArea) || totalArea <= 0) {
+          showError('totalArea', 'areaError');
+          isValid = false;
+        } else {
+          area = convertToSquareFeet(totalArea, areaUnit);
+        }
+      } else {
+        const length = parseFloat(document.getElementById('length').value);
+        const lengthUnit = document.getElementById('lengthUnit').value;
+        const width = parseFloat(document.getElementById('width').value);
+        const widthUnit = document.getElementById('widthUnit').value;
+        
+        if (isNaN(length) || length <= 0) {
+          showError('length', 'lengthError');
+          isValid = false;
+        }
+        if (isNaN(width) || width <= 0) {
+          showError('width', 'widthError');
+          isValid = false;
+        }
+        
+        if (isValid) {
+          const l = convertLengthToFeet(length, lengthUnit);
+          const w = convertLengthToFeet(width, widthUnit);
+          area = l * w;
+        }
+      }
+
+      const depth = parseFloat(document.getElementById('depth').value);
+      if (isNaN(depth) || depth < 2 || depth > 10) {
+        showError('depth', 'depthError');
+        isValid = false;
+      }
+
+      if (!isValid) {
+        return;
+      }
+
+      const volumeCubicFeet = (area * (depth / 12));
+      const volumeCubicYards = volumeCubicFeet / 27;
+      const volumeCubicMeters = volumeCubicFeet * 0.0283168;
+      const volumeLiters = volumeCubicMeters * 1000;
+      const bags1_5 = volumeCubicFeet / 1.5;
+      const bags2 = volumeCubicFeet / 2;
+
+      document.getElementById('output').style.display = 'block';
+      document.getElementById('result').innerHTML = `
+        <strong>Cubic Yards:</strong> ${volumeCubicYards.toFixed(2)}<br>
+        <strong>Cubic Feet:</strong> ${volumeCubicFeet.toFixed(2)}<br>
+        <strong>Cubic Meters:</strong> ${volumeCubicMeters.toFixed(2)}<br>
+        <strong>Liters:</strong> ${volumeLiters.toFixed(0)}<br>
+        <strong>1.5-cubic-foot Bags:</strong> ${bags1_5.toFixed(0)}<br>
+        <strong>2-cubic-foot Bags:</strong> ${bags2.toFixed(0)}
+      `;
+    }
+
+    function clearOutput() {
+      document.getElementById('output').style.display = 'none';
+      clearErrors();
+    }
+  </script>
+</body>
+</html>
