@@ -12,26 +12,8 @@
         <div class="container">
           <h1>Topsoil Calculator</h1>
           <form id="topsoilForm">
-            <label>Choose Input Type:</label>
-            <select id="inputType">
-              <option value="area">Total Area</option>
-              <option value="dimensions">Dimensions</option>
-            </select>
-
-            <div id="areaInput">
-              <label>Total Area:</label>
-              <div class="input-with-unit">
-                <input type="number" id="totalArea" placeholder="Enter area">
-                <select id="areaUnit">
-                  <option value="feet">Square Feet</option>
-                  <option value="yards">Square Yards</option>
-                  <option value="meters">Square Meters</option>
-                </select>
-              </div>
-              <span id="areaError" class="error">Please enter a valid area</span>
-            </div>
-
-            <div id="dimensionInput" style="display:none">
+            <h3>Dimensions</h3>
+            <div class="dimension-row">
               <div class="dimension-group">
                 <label>Length:</label>
                 <input type="number" id="length">
@@ -43,14 +25,27 @@
                 <input type="number" id="width">
                 <span id="widthError" class="error">Please enter a valid width</span>
               </div>
+            </div>
 
-              <label>Unit for Length & Width:</label>
-              <select id="dimensionUnit">
-                <option value="feet">Feet</option>
-                <option value="yards">Yards</option>
-                <option value="meters">Meters</option>
+            <label class="unit-label">Unit for Length & Width:</label>
+            <select id="dimensionUnit">
+              <option value="feet">Feet</option>
+              <option value="yards">Yards</option>
+              <option value="meters">Meters</option>
+            </select>
+
+            <div class="or-divider">OR</div>
+
+            <h3>Total Area</h3>
+            <div class="input-with-unit">
+              <input type="number" id="totalArea" placeholder="Enter area">
+              <select id="areaUnit">
+                <option value="feet">Square Feet</option>
+                <option value="yards">Square Yards</option>
+                <option value="meters">Square Meters</option>
               </select>
             </div>
+            <span id="areaError" class="error">Please enter a valid area</span>
 
             <label>Depth (inches):</label>
             <input type="number" id="depth" value="6" min="2" max="10">
@@ -69,7 +64,7 @@
         </div>
       `;
 
-      // CSS Styles (unchanged)
+      // CSS Styles
       const style = document.createElement('style');
       style.textContent = `
         body {
@@ -91,28 +86,47 @@
         h1 {
           text-align: center;
           color: #ad2a24;
+          margin-bottom: 1.5rem;
+        }
+        h3 {
+          margin: 0.5rem 0;
+          color: #333;
+          font-size: 1.1rem;
         }
         label {
           display: block;
-          margin: 1rem 0 0.5rem;
+          margin: 0.5rem 0 0.25rem;
+          font-weight: bold;
+        }
+        .unit-label {
+          margin-top: 0.75rem;
         }
         input, select, button {
           padding: 0.5rem;
           border-radius: 4px;
           border: 1px solid #ccc;
+          font-size: 1rem;
         }
         input {
           width: calc(100% - 1rem);
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.25rem;
         }
         select {
           width: 100%;
-          margin-top: 0.25rem;
+        }
+        .dimension-row {
+          display: flex;
+          gap: 0.75rem;
+          margin-bottom: 0.5rem;
+        }
+        .dimension-group {
+          flex: 1;
         }
         .input-with-unit {
           display: flex;
           gap: 0.5rem;
           align-items: center;
+          margin: 0.25rem 0 0.5rem;
         }
         .input-with-unit input {
           flex: 2;
@@ -120,15 +134,18 @@
         }
         .input-with-unit select {
           flex: 1;
-          margin-top: 0;
         }
-        .dimension-group {
-          margin-bottom: 1rem;
+        .or-divider {
+          text-align: center;
+          margin: 0.75rem 0;
+          color: #666;
+          font-weight: bold;
+          font-size: 0.9rem;
         }
         .button-group {
           display: flex;
-          gap: 1rem;
-          margin-top: 1rem;
+          gap: 0.75rem;
+          margin-top: 1.25rem;
         }
         button {
           width: 100%;
@@ -137,20 +154,21 @@
           font-weight: bold;
           border: none;
           cursor: pointer;
+          padding: 0.75rem;
         }
         button:hover {
           background-color: #92231f;
         }
         .output {
-          margin-top: 2rem;
+          margin-top: 1.5rem;
           padding: 1rem;
           background-color: #fdf2ed;
           border-left: 4px solid #ad2a24;
         }
         .error {
           color: #ad2a24;
-          font-size: 0.9rem;
-          margin-top: 0.25rem;
+          font-size: 0.8rem;
+          margin-top: 0.1rem;
           display: none;
         }
         .error.active {
@@ -160,8 +178,13 @@
           border-color: #ad2a24;
         }
         @media (max-width: 600px) {
+          .dimension-row {
+            flex-direction: column;
+            gap: 0;
+          }
           .button-group {
             flex-direction: column;
+            gap: 0.5rem;
           }
           .input-with-unit {
             flex-direction: column;
@@ -176,24 +199,12 @@
       `;
       document.head.appendChild(style);
 
+      // Rest of the JavaScript remains the same...
       // Get DOM elements
-      const inputType = document.getElementById('inputType');
-      const areaInput = document.getElementById('areaInput');
-      const dimensionInput = document.getElementById('dimensionInput');
       const calculateBtn = document.getElementById('calculateBtn');
       const resetBtn = document.getElementById('resetBtn');
 
       // Event listeners
-      inputType.addEventListener('change', function() {
-        if (this.value === 'area') {
-          areaInput.style.display = 'block';
-          dimensionInput.style.display = 'none';
-        } else {
-          areaInput.style.display = 'none';
-          dimensionInput.style.display = 'block';
-        }
-      });
-
       calculateBtn.addEventListener('click', calculateTopsoil);
       resetBtn.addEventListener('click', clearOutput);
 
@@ -228,19 +239,16 @@
         clearErrors();
         let isValid = true;
         let area = 0;
+        let usingDimensions = false;
 
-        if (inputType.value === 'area') {
-          const totalArea = parseFloat(document.getElementById('totalArea').value);
-          const areaUnit = document.getElementById('areaUnit').value;
-          if (isNaN(totalArea) || totalArea <= 0) {
-            showError('totalArea', 'areaError');
-            isValid = false;
-          } else {
-            area = convertToSquareFeet(totalArea, areaUnit);
-          }
-        } else {
-          const length = parseFloat(document.getElementById('length').value);
-          const width = parseFloat(document.getElementById('width').value);
+        // Check if dimensions are being used
+        const length = parseFloat(document.getElementById('length').value);
+        const width = parseFloat(document.getElementById('width').value);
+        const totalArea = parseFloat(document.getElementById('totalArea').value);
+
+        if ((!isNaN(length) && length > 0) || (!isNaN(width) && width > 0)) {
+          usingDimensions = true;
+          
           const dimensionUnit = document.getElementById('dimensionUnit').value;
           
           if (isNaN(length) || length <= 0) {
@@ -256,6 +264,15 @@
             const l = convertLengthToFeet(length, dimensionUnit);
             const w = convertLengthToFeet(width, dimensionUnit);
             area = l * w;
+          }
+        } else {
+          // Use total area if dimensions aren't provided
+          const areaUnit = document.getElementById('areaUnit').value;
+          if (isNaN(totalArea) || totalArea <= 0) {
+            showError('totalArea', 'areaError');
+            isValid = false;
+          } else {
+            area = convertToSquareFeet(totalArea, areaUnit);
           }
         }
 
@@ -288,11 +305,6 @@
       }
 
       function clearOutput() {
-        // Reset to "Total Area" mode
-        inputType.value = 'area';
-        areaInput.style.display = 'block';
-        dimensionInput.style.display = 'none';
-        
         // Clear all inputs
         document.getElementById('totalArea').value = '';
         document.getElementById('length').value = '';
