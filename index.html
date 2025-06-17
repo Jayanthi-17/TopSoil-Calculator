@@ -6,11 +6,16 @@
   <title>Topsoil Calculator</title>
 </head>
 <body>
+  <!-- Add this container where you want the calculator to appear -->
+  <div id="soilCalculatorContainer"></div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      document.body.innerHTML = `
-        <div class="container">
+      // Target the specific container instead of document.body
+      const container = document.getElementById('soilCalculatorContainer');
       
+      container.innerHTML = `
+        <div class="container">
           <form id="topsoilForm">
             <h3>Dimensions</h3>
             <div class="dimension-row">
@@ -67,14 +72,14 @@
       // CSS Styles
       const style = document.createElement('style');
       style.textContent = `
-        body {
+        #soilCalculatorContainer {
           font-family: Arial, sans-serif;
           margin: 0;
           padding: 1rem;
           background-color: #fff8f0;
           color: #333;
         }
-        .container {
+        #soilCalculatorContainer .container {
           max-width: 600px;
           margin: auto;
           padding: 1rem;
@@ -83,71 +88,73 @@
           background-color: #ffffff;
           border-top: 5px solid #ad2a24;
         }
-        h1 {
+        #soilCalculatorContainer h1 {
           text-align: center;
           color: #ad2a24;
           margin-bottom: 1.5rem;
         }
-        h3 {
+        #soilCalculatorContainer h3 {
           margin: 0.5rem 0;
           color: #333;
           font-size: 1.1rem;
         }
-        label {
+        #soilCalculatorContainer label {
           display: block;
           margin: 0.5rem 0 0.25rem;
           font-weight: bold;
         }
-        .unit-label {
+        #soilCalculatorContainer .unit-label {
           margin-top: 0.75rem;
         }
-        input, select, button {
+        #soilCalculatorContainer input, 
+        #soilCalculatorContainer select, 
+        #soilCalculatorContainer button {
           padding: 0.5rem;
           border-radius: 4px;
           border: 1px solid #ccc;
           font-size: 1rem;
         }
-        input {
+        #soilCalculatorContainer input {
           width: calc(100% - 1rem);
           margin-bottom: 0.25rem;
         }
-        select {
+        #soilCalculatorContainer select {
           width: 100%;
         }
-        .dimension-row {
+        #soilCalculatorContainer .dimension-row {
           display: flex;
           gap: 0.75rem;
           margin-bottom: 0.5rem;
         }
-        .dimension-group {
+        #soilCalculatorContainer .dimension-group {
           flex: 1;
         }
-        .input-with-unit {
+        #soilCalculatorContainer .input-with-unit {
           display: flex;
           gap: 0.5rem;
           align-items: center;
           margin: 0.25rem 0 0.5rem;
         }
-        .input-with-unit input {
+        #soilCalculatorContainer .input-with-unit input {
           flex: 2;
           margin-bottom: 0;
         }
-        .input-with-unit select {
+        #soilCalculatorContainer .input-with-unit select {
           flex: 1;
         }
-        .or-divider {
+        #soilCalculatorContainer .or-divider {
           text-align: center;
           margin: 0.75rem 0;
           color: #666;
           font-weight: bold;
           font-size: 0.9rem;
         }
-        .button-group {
+        #soilCalculatorContainer .button-group {
           display: flex;
           gap: 0.75rem;
           margin-top: 1.25rem;
         }
-        button {
+        #soilCalculatorContainer button {
           width: 100%;
           background-color: #ad2a24;
           color: white;
@@ -156,47 +163,47 @@
           cursor: pointer;
           padding: 0.75rem;
         }
-        button:hover {
+        #soilCalculatorContainer button:hover {
           background-color: #92231f;
         }
-        .output {
+        #soilCalculatorContainer .output {
           margin-top: 1.5rem;
           padding: 1rem;
           background-color: #fdf2ed;
           border-left: 4px solid #ad2a24;
         }
-        .error {
+        #soilCalculatorContainer .error {
           color: #ad2a24;
           font-size: 0.8rem;
           margin-top: 0.1rem;
           display: none;
         }
-        .error.active {
+        #soilCalculatorContainer .error.active {
           display: block;
         }
-        .input-error {
+        #soilCalculatorContainer .input-error {
           border-color: #ad2a24;
         }
 
-        #calculateBtn{
-        background-color: #4CAF50 
+        #soilCalculatorContainer #calculateBtn{
+          background-color: #4CAF50 
         }
         @media (max-width: 600px) {
-          .dimension-row {
+          #soilCalculatorContainer .dimension-row {
             flex-direction: column;
             gap: 0;
           }
-          .button-group {
+          #soilCalculatorContainer .button-group {
             flex-direction: column;
             gap: 0.5rem;
           }
-          .input-with-unit {
+          #soilCalculatorContainer .input-with-unit {
             flex-direction: column;
             align-items: stretch;
             gap: 0.25rem;
           }
-          .input-with-unit input,
-          .input-with-unit select {
+          #soilCalculatorContainer .input-with-unit input,
+          #soilCalculatorContainer .input-with-unit select {
             width: 100%;
           }
         }
@@ -226,17 +233,17 @@
       }
 
       function clearErrors() {
-        document.querySelectorAll('.error').forEach(el => {
+        container.querySelectorAll('.error').forEach(el => {
           el.classList.remove('active');
         });
-        document.querySelectorAll('input').forEach(el => {
+        container.querySelectorAll('input').forEach(el => {
           el.classList.remove('input-error');
         });
       }
 
       function showError(elementId, errorId) {
-        document.getElementById(elementId).classList.add('input-error');
-        document.getElementById(errorId).classList.add('active');
+        container.querySelector('#' + elementId).classList.add('input-error');
+        container.querySelector('#' + errorId).classList.add('active');
       }
 
       function calculateTopsoil() {
@@ -246,14 +253,14 @@
         let usingDimensions = false;
 
         // Check if dimensions are being used
-        const length = parseFloat(document.getElementById('length').value);
-        const width = parseFloat(document.getElementById('width').value);
-        const totalArea = parseFloat(document.getElementById('totalArea').value);
+        const length = parseFloat(container.querySelector('#length').value);
+        const width = parseFloat(container.querySelector('#width').value);
+        const totalArea = parseFloat(container.querySelector('#totalArea').value);
 
         if ((!isNaN(length) && length > 0) || (!isNaN(width) && width > 0)) {
           usingDimensions = true;
           
-          const dimensionUnit = document.getElementById('dimensionUnit').value;
+          const dimensionUnit = container.querySelector('#dimensionUnit').value;
           
           if (isNaN(length) || length <= 0) {
             showError('length', 'lengthError');
@@ -271,7 +278,7 @@
           }
         } else {
           // Use total area if dimensions aren't provided
-          const areaUnit = document.getElementById('areaUnit').value;
+          const areaUnit = container.querySelector('#areaUnit').value;
           if (isNaN(totalArea) || totalArea <= 0) {
             showError('totalArea', 'areaError');
             isValid = false;
@@ -280,7 +287,7 @@
           }
         }
 
-        const depth = parseFloat(document.getElementById('depth').value);
+        const depth = parseFloat(container.querySelector('#depth').value);
         if (isNaN(depth) || depth < 2 || depth > 10) {
           showError('depth', 'depthError');
           isValid = false;
@@ -297,8 +304,8 @@
         const bags1_5 = volumeCubicFeet / 1.5;
         const bags2 = volumeCubicFeet / 2;
 
-        document.getElementById('output').style.display = 'block';
-        document.getElementById('result').innerHTML = `
+        container.querySelector('#output').style.display = 'block';
+        container.querySelector('#result').innerHTML = `
           <strong>Cubic Yards:</strong> ${volumeCubicYards.toFixed(2)}<br>
           <strong>Cubic Feet:</strong> ${volumeCubicFeet.toFixed(2)}<br>
           <strong>Cubic Meters:</strong> ${volumeCubicMeters.toFixed(2)}<br>
@@ -310,13 +317,13 @@
 
       function clearOutput() {
         // Clear all inputs
-        document.getElementById('totalArea').value = '';
-        document.getElementById('length').value = '';
-        document.getElementById('width').value = '';
-        document.getElementById('depth').value = '6';
+        container.querySelector('#totalArea').value = '';
+        container.querySelector('#length').value = '';
+        container.querySelector('#width').value = '';
+        container.querySelector('#depth').value = '6';
         
         // Hide output
-        document.getElementById('output').style.display = 'none';
+        container.querySelector('#output').style.display = 'none';
         
         // Clear errors
         clearErrors();
