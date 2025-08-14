@@ -16,6 +16,7 @@
       
       container.innerHTML = `
         <div class="container">
+          <h2>TopSoil Calculator</h2>
           <form id="topsoilForm">
             <h3>Dimensions</h3>
             <div class="dimension-row">
@@ -73,7 +74,8 @@
       const style = document.createElement('style');
       style.textContent = `
         #soilCalculatorContainer {
-          font-family: Arial, sans-serif;
+          font-family: Arial, sans-serif;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          background: #f9f6ee;
           margin: 0;
           padding: 1rem;
           background-color: #fff8f0;
@@ -85,13 +87,14 @@
           padding: 1rem;
           border-radius: 10px;
           box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-          background-color: #ffffff;
-          border-top: 5px solid #ad2a24;
+          background: #f9f6ee;;
         }
-        #soilCalculatorContainer h1 {
-          text-align: center;
-          color: #ad2a24;
-          margin-bottom: 1.5rem;
+        #soilCalculatorContainer h2 {
+        font-size: 2.1rem; 
+        color: #553a4d; 
+        font-weight: bold; 
+        text-align: center;
+        margin-bottom: 1.5rem;
         }
         #soilCalculatorContainer h3 {
           margin: 0.5rem 0;
@@ -163,14 +166,12 @@
           cursor: pointer;
           padding: 0.75rem;
         }
-        #soilCalculatorContainer button:hover {
-          background-color: #92231f;
-        }
+        
         #soilCalculatorContainer .output {
           margin-top: 1.5rem;
           padding: 1rem;
-          background-color: #fdf2ed;
-          border-left: 4px solid #ad2a24;
+          background-color: #fff;
+    
         }
         #soilCalculatorContainer .error {
           color: #ad2a24;
@@ -186,7 +187,21 @@
         }
 
         #soilCalculatorContainer #calculateBtn{
-          background-color: #4CAF50 
+          background-color: #b43a22;
+          font-size:1.2rem;  
+        }
+        #soilCalculatorContainer #calculateBtn:hover{
+
+          background: #98301e;
+        }
+        #soilCalculatorContainer #resetBtn{
+        background: #dfcda7; 
+        color: #885b23; 
+        font-size:1.2rem;
+        transition: background 0.15s;
+        }
+        #soilCalculatorContainer #resetBtn:hover{
+        background: #e8e0c5; 
         }
         @media (max-width: 600px) {
           #soilCalculatorContainer .dimension-row {
